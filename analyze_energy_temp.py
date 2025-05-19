@@ -4,10 +4,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from statsmodels.tsa.seasonal import seasonal_decompose
 from sklearn.linear_model import LinearRegression
+from pathlib import Path
 
 # Filepaths
-weather_fp = "F:/TraeProjects/DataIntegration_and_Exploration/NYCWeatherData/New York Weather Data.csv"
-load_fp    = "F:/TraeProjects/DataIntegration_and_Exploration/NYCEnergyLoad/OASIS_Real_Time_Dispatch_Actual_Load.csv"
+base_dir = Path(__file__).parent
+weather_fp = str(base_dir / "NYCWeatherData/New York Weather Data.csv")
+load_fp    = str(base_dir / "NYCEnergyLoad/OASIS_Real_Time_Dispatch_Actual_Load.csv")
 
 # 1) Load raw weather CSV
 #    We read all columns, but we’ll filter to rows where Hourly* are NaN
