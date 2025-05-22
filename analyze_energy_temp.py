@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import holidays
 from statsmodels.tsa.seasonal import seasonal_decompose
 from sklearn.linear_model import LinearRegression
 from pathlib import Path
@@ -57,10 +58,38 @@ df_daily = pd.concat([
 # Reset index to turn the date into a column named 'date'
 df_daily = df_daily.reset_index().rename(columns={"index":"date"})
 
+# analyze if is weekend and holiday
+df_daily["is_weekend"] = df_daily["date"].dt.weekday >= 5
+us_holidays = holidays.US(years=df_daily["date"].dt.year.unique().tolist())
+df_daily["is_holiday"] = df_daily["date"].isin(us_holidays)
+df_daily = pd.get_dummies(df_daily, columns=["is_weekend", "is_holiday"], drop_first=True)
+
+#analyze what is the max load, temp, humidity, avg temp, humidity and load
+max_load = df_daily["daily_max_load_mw"].max()
+max_temp = df_daily["avg_temp_f"].max()
+max_humidity = df_daily["avg_humidity_pct"].max()
+avg_temp = df_daily["avg_temp_f"].mean()
+avg_humidity = df_daily["avg_humidity_pct"].mean()
+avg_load = df_daily["daily_max_load_mw"].mean()
+
+print(f"Max daily load: {max_load:.2f} MW")
+print(f"Max daily temperature: {max_temp:.2f} F")
+print(f"Max daily humidity: {max_humidity:.2f} %")
+print(f"Average daily temperature: {avg_temp:.2f} F")
+print(f"Average daily humidity: {avg_humidity:.2f} %")
+print(f"Average daily load: {avg_load:.2f} MW")
+
+#analyze if the max load is higher on weekend or holiday
+weekend_load = df_daily[df_daily["is_weekend_True"]]["daily_max_load_mw"].mean()
+holiday_load = df_daily[df_daily["is_holiday_True"]]["daily_max_load_mw"].mean()
+
+print(f"Average daily max load on weekends: {weekend_load:.2f} MW")
+print(f"Average daily max load on holidays: {holiday_load:.2f} MW")
+
 # 6) Ready to analyze or export
 print(df_daily.head())
 
-# Optional: save to CSV for easy external use
+#Save to CSV 
 df_daily.to_csv("daily_weather_and_load_2023.csv", index=False)
 
 # -----------------------------------------------------------------------------
