@@ -2,6 +2,8 @@
 
 This project analyzes the relationship between weather conditions and energy consumption patterns in New York City using data from 2023. The analysis combines daily weather measurements with real-time energy load data to uncover correlations and trends.
 
+> This repository is a **forked version** of the original project created in collaboration with a classmate. It is shared here for personal reference.
+
 ## Data Sources
 
 - **Weather Data**: NYC weather measurements including temperature and humidity
